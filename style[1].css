@@ -1,0 +1,203 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #121214;
+    color: #e1e1e6;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 240px;
+    background-color: #1a1a1e;
+    padding: 2rem;
+    border-right: 1px solid #29292e;
+}
+
+.sidebar h2 {
+    color: #00b37e;
+    margin-bottom: 2rem;
+}
+
+.sidebar nav a {
+    display: block;
+    color: #a8a8b3;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.sidebar nav a:hover, .sidebar nav a.active {
+    background-color: #29292e;
+    color: #fff;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+header {
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: #8d8d99;
+}
+
+/* Stats Cards Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.card {
+    background-color: #1a1a1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #29292e;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    color: #8d8d99;
+    margin-bottom: 1rem;
+}
+
+.card .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.text-alert {
+    color: #f75a68;
+}
+
+.stat-change {
+    font-size: 0.85rem;
+}
+
+.stat-change.positive { color: #00b37e; }
+.stat-change.negative { color: #f75a68; }
+
+/* Table Styling */
+.table-section {
+    background-color: #1a1a1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #29292e;
+}
+
+.table-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #29292e;
+}
+
+th {
+    color: #8d8d99;
+    font-weight: 600;
+}
+
+/* Status Badges */
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge.success {
+    background-color: rgba(0, 179, 126, 0.1);
+    color: #00b37e;
+}
+
+.badge.alert {
+    background-color: rgba(247, 90, 104, 0.1);
+    color: #f75a68;
+}
+/* Authentication Layout Styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #121214;
+}
+
+.auth-box {
+    background-color: #1a1a1e;
+    border: 1px solid #29292e;
+    padding: 2.5rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.auth-box h2 {
+    margin-bottom: 1.5rem;
+    color: #fff;
+    text-align: center;
+}
+
+.auth-toggle {
+    margin-top: 1.2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #a8a8b3;
+}
+
+.auth-toggle a {
+    color: #00b37e;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+.user-badge {
+    background-color: #121214;
+    border: 1px solid #29292e;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+}
+
+.user-badge strong {
+    color: #00b37e;
+}
