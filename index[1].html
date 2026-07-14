@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales & Inventory Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <h2 id="authTitle">Login to BizTrack</h2>
+            <form id="authForm">
+                <div class="input-group">
+                    <label for="authUsername">Username</label>
+                    <input type="text" id="authUsername" required placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label for="authPassword">Password</label>
+                    <input type="password" id="authPassword" required placeholder="Enter password">
+                </div>
+                <button type="submit" id="authBtn" class="btn-submit" style="width: 100%; margin-top: 1rem;">Login</button>
+            </form>
+            <p class="auth-toggle">
+                <span id="toggleText">Don't have an account?</span> 
+                <a href="#" id="toggleAuthMode">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= MAIN DASHBOARD ================= -->
+    <div id="dashboardContainer" class="dashboard-container" style="display: none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h2>BizTrack</h2>
+            <div class="user-badge">
+                <p>User: <strong id="currentUserDisplay">Guest</strong></p>
+            </div>
+            <nav id="sidebarNav">
+                <a href="#" data-view="dashboardView" class="nav-link active">Dashboard</a>
+                <a href="#" data-view="inventoryView" class="nav-link">Inventory</a>
+                <a href="#" data-view="salesLogView" class="nav-link">Sales Log</a>
+                <a href="#" data-view="analyticsView" class="nav-link">Analytics</a>
+                <a href="#" id="btnLogout" class="logout-link" style="margin-top: 2rem; color: #f75a68;">Log Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- ====== VIEW 1: DASHBOARD OVERVIEW ====== -->
+            <div id="dashboardView" class="app-view">
+                <header>
+                    <h1>Sales & Inventory Overview</h1>
+                    <p>Welcome back! Here is your business status for today.</p>
+                </header>
+
+                <!-- Stats Cards Grid -->
+                <section class="stats-grid">
+                    <div class="card">
+                        <h3>Total Revenue</h3>
+                        <p class="stat-value">$12,450.00</p>
+                        <span class="stat-change positive">+12% this week</span>
+                    </div>
+                    <div class="card">
+                        <h3>Total Sales</h3>
+                        <p class="stat-value">342</p>
+                        <span class="stat-change positive">+8% today</span>
+                    </div>
+                    <div class="card">
+                        <h3>Low Stock Items</h3>
+                        <p class="stat-value text-alert">5</p>
+                        <span class="stat-change negative">Requires attention</span>
+                    </div>
+                </section>
+
+                <!-- Log a New Sale Form Section -->
+                <section class="form-section">
+                    <h2>Log a New Sale</h2>
+                    <form id="salesForm" class="sales-form">
+                        <div class="input-group">
+                            <label for="prodName">Product Name</label>
+                            <input type="text" id="prodName" placeholder="e.g., Wireless Mouse" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="prodQty">Quantity</label>
+                            <input type="number" id="prodQty" min="1" value="1" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="prodPrice">Unit Price ($)</label>
+                            <input type="number" id="prodPrice" step="0.01" min="0" placeholder="0.00" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Submit Sale</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- ====== VIEW 2: INVENTORY LIST ====== -->
+            <div id="inventoryView" class="app-view" style="display: none;">
+                <header>
+                    <h1>Current Inventory</h1>
+                    <p>Manage and audit your current warehouse stock levels.</p>
+                </header>
+                <section class="table-section">
+                    <h2>Stock Breakdown</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>SKU</th>
+                                <th>Stock Level</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Items dynamically injected here -->
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+            <!-- ====== VIEW 3: SALES LOG ====== -->
+            <div id="salesLogView" class="app-view" style="display: none;">
+                <header>
+                    <h1>Sales Log</h1>
+                    <p>A sequential breakdown of all transactional entries processed.</p>
+                </header>
+                <div class="card">
+                    <h3>Recent History Log</h3>
+                    <p style="color: #8d8d99; margin-top: 1rem;">Transaction logging tracking ledger interface modules go here.</p>
+                </div>
+            </div>
+
+            <!-- ====== VIEW 4: ANALYTICS ====== -->
+            <div id="analyticsView" class="app-view" style="display: none;">
+                <header>
+                    <h1>Business Analytics</h1>
+                    <p>Performance trends, revenue trajectory charts, and insight projections.</p>
+                </header>
+                <div class="card">
+                    <h3>Performance Overview</h3>
+                    <p style="color: #8d8d99; margin-top: 1rem;">Analytical charting spaces and reporting summaries go here.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ================= SYSTEM JAVASCRIPT ================= -->
+    <script>
+        let authMode = 'login';
+        let currentUser = localStorage.getItem('loggedUser') || null;
+
+        const authContainer = document.getElementById('authContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const authForm = document.getElementById('authForm');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleAuthMode = document.getElementById('toggleAuthMode');
+        const toggleText = document.getElementById('toggleText');
+        const currentUserDisplay = document.getElementById('currentUserDisplay');
+        const btnLogout = document.getElementById('btnLogout');
+
+        // --- View Switching Engine ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const appViews = document.querySelectorAll('.app-view');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active styling color from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Hide all views completely
+                appViews.forEach(v => v.style.display = 'none');
+
+                // Make clicked link active and show its designated view container
+                link.classList.add('active');
+                const targetViewId = link.getAttribute('data-view');
+                document.getElementById(targetViewId).style.display = 'block';
+            });
+        });
+
+        // --- Check UI State on Load ---
+        function checkAuthState() {
+            if (currentUser) {
+                authContainer.style.display = 'none';
+                dashboardContainer.style.display = 'flex';
+                currentUserDisplay.textContent = currentUser;
+                loadSales();
+                
+                // Always reset view layout to default Dashboard view on entry
+                navLinks.forEach(l => l.classList.remove('active'));
+                appViews.forEach(v => v.style.display = 'none');
+                document.querySelector('[data-view="dashboardView"]').classList.add('active');
+                document.getElementById('dashboardView').style.display = 'block';
+            } else {
+                authContainer.style.display = 'flex';
+                dashboardContainer.style.display = 'none';
+            }
+        }
+
+        // --- Toggle Login/Signup Modes ---
+        toggleAuthMode.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (authMode === 'login') {
+                authMode = 'signup';
+                authTitle.textContent = 'Create Account';
+                authBtn.textContent = 'Sign Up';
+                toggleText.textContent = 'Already have an account?';
+                toggleAuthMode.textContent = 'Login';
+            } else {
+                authMode = 'login';
+                authTitle.textContent = 'Login to BizTrack';
+                authBtn.textContent = 'Login';
+                toggleText.textContent = "Don't have an account?";
+                toggleAuthMode.textContent = 'Sign Up';
+            }
+            authForm.reset();
+        });
+
+        // --- Handle Login / Signup Submit ---
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (authMode === 'signup') {
+                if (users[username]) {
+                    alert('Username already taken!');
+                    return;
+                }
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Account created successfully! Please login.');
+                toggleAuthMode.click();
+            } else {
+                if (users[username] && users[username] === password) {
+                    currentUser = username;
+                    localStorage.setItem('loggedUser', username);
+                    checkAuthState();
+                } else {
+                    alert('Invalid username or password.');
+                }
+            }
+        });
+
+        // --- Handle Logout ---
+        btnLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('loggedUser');
+            currentUser = null;
+            document.getElementById('inventoryTableBody').innerHTML = '';
+            checkAuthState();
+        });
+
+        // --- Core Sales Data Engine ---
+        function loadSales() {
+            const tableBody = document.getElementById('inventoryTableBody');
+            tableBody.innerHTML = '';
+            
+            const allSales = JSON.parse(localStorage.getItem(`sales_${currentUser}`)) || [];
+            
+            allSales.forEach(sale => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${sale.name}</td>
+                    <td>${sale.sku}</td>
+                    <td>${sale.qty}</td>
+                    <td>$${sale.price}</td>
+                    <td><span class="badge success">In Stock</span></td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        }
+
+        document.getElementById('salesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('prodName').value;
+            const qty = parseInt(document.getElementById('prodQty').value);
+            const price = parseFloat(document.getElementById('prodPrice').value).toFixed(2);
+            const sku = "SKU-" + Math.floor(100 + Math.random() * 900);
+
+            const newSale = { name, sku, qty, price };
+
+            const currentSales = JSON.parse(localStorage.getItem(`sales_${currentUser}`)) || [];
+            currentSales.push(newSale);
+            localStorage.setItem(`sales_${currentUser}`, JSON.stringify(currentSales));
+
+            // Append row directly inside the inventory view table body
+            const tableBody = document.getElementById('inventoryTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${sku}</td>
+                <td>${qty}</td>
+                <td>$${price}</td>
+                <td><span class="badge success">In Stock</span></td>
+            `;
+            tableBody.appendChild(newRow);
+
+            document.getElementById('salesForm').reset();
+            document.getElementById('prodQty').value = "1";
+            
+            alert('Sale logged! Check the "Inventory" tab to view it.');
+        });
+
+        checkAuthState();
+    </script>
+</body>
+</html>
