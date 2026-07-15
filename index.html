@@ -105,6 +105,174 @@
             </section>
         </main>
     </div>
+
+  upps
     <script src="script.js"></script>
+=======
+
+    <!-- ================= SYSTEM JAVASCRIPT ================= -->
+    <script>
+        let authMode = 'login';
+        let currentUser = localStorage.getItem('loggedUser') || null;
+
+        const authContainer = document.getElementById('authContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const authForm = document.getElementById('authForm');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const toggleAuthMode = document.getElementById('toggleAuthMode');
+        const toggleText = document.getElementById('toggleText');
+        const currentUserDisplay = document.getElementById('currentUserDisplay');
+        const btnLogout = document.getElementById('btnLogout');
+
+        // --- View Switching Engine ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const appViews = document.querySelectorAll('.app-view');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active styling color from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Hide all views completely
+                appViews.forEach(v => v.style.display = 'none');
+
+                // Make clicked link active and show its designated view container
+                link.classList.add('active');
+                const targetViewId = link.getAttribute('data-view');
+                document.getElementById(targetViewId).style.display = 'block';
+            });
+        });
+
+        // --- Check UI State on Load ---
+        function checkAuthState() {
+            if (currentUser) {
+                authContainer.style.display = 'none';
+                dashboardContainer.style.display = 'flex';
+                currentUserDisplay.textContent = currentUser;
+                loadSales();
+                
+                // Always reset view layout to default Dashboard view on entry
+                navLinks.forEach(l => l.classList.remove('active'));
+                appViews.forEach(v => v.style.display = 'none');
+                document.querySelector('[data-view="dashboardView"]').classList.add('active');
+                document.getElementById('dashboardView').style.display = 'block';
+            } else {
+                authContainer.style.display = 'flex';
+                dashboardContainer.style.display = 'none';
+            }
+        }
+
+        // --- Toggle Login/Signup Modes ---
+        toggleAuthMode.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (authMode === 'login') {
+                authMode = 'signup';
+                authTitle.textContent = 'Create Account';
+                authBtn.textContent = 'Sign Up';
+                toggleText.textContent = 'Already have an account?';
+                toggleAuthMode.textContent = 'Login';
+            } else {
+                authMode = 'login';
+                authTitle.textContent = 'Login to Mzedu Data';
+                authBtn.textContent = 'Login';
+                toggleText.textContent = "Don't have an account?";
+                toggleAuthMode.textContent = 'Sign Up';
+            }
+            authForm.reset();
+        });
+
+        // --- Handle Login / Signup Submit ---
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('authUsername').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (authMode === 'signup') {
+                if (users[username]) {
+                    alert('Username already taken!');
+                    return;
+                }
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Account created successfully! Please login.');
+                toggleAuthMode.click();
+            } else {
+                if (users[username] && users[username] === password) {
+                    currentUser = username;
+                    localStorage.setItem('loggedUser', username);
+                    checkAuthState();
+                } else {
+                    alert('Invalid username or password.');
+                }
+            }
+        });
+
+        // --- Handle Logout ---
+        btnLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('loggedUser');
+            currentUser = null;
+            document.getElementById('inventoryTableBody').innerHTML = '';
+            checkAuthState();
+        });
+
+        // --- Core Sales Data Engine ---
+        function loadSales() {
+            const tableBody = document.getElementById('inventoryTableBody');
+            tableBody.innerHTML = '';
+            
+            const allSales = JSON.parse(localStorage.getItem(`sales_${currentUser}`)) || [];
+            
+            allSales.forEach(sale => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${sale.name}</td>
+                    <td>${sale.sku}</td>
+                    <td>${sale.qty}</td>
+                    <td>$${sale.price}</td>
+                    <td><span class="badge success">In Stock</span></td>
+                `;
+                tableBody.appendChild(newRow);
+            });
+        }
+
+        document.getElementById('salesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('prodName').value;
+            const qty = parseInt(document.getElementById('prodQty').value);
+            const price = parseFloat(document.getElementById('prodPrice').value).toFixed(2);
+            const sku = "SKU-" + Math.floor(100 + Math.random() * 900);
+
+            const newSale = { name, sku, qty, price };
+
+            const currentSales = JSON.parse(localStorage.getItem(`sales_${currentUser}`)) || [];
+            currentSales.push(newSale);
+            localStorage.setItem(`sales_${currentUser}`, JSON.stringify(currentSales));
+
+            // Append row directly inside the inventory view table body
+            const tableBody = document.getElementById('inventoryTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${sku}</td>
+                <td>${qty}</td>
+                <td>$${price}</td>
+                <td><span class="badge success">In Stock</span></td>
+            `;
+            tableBody.appendChild(newRow);
+
+            document.getElementById('salesForm').reset();
+            document.getElementById('prodQty').value = "1";
+            
+            alert('Sale logged! Check the "Inventory" tab to view it.');
+        });
+        
+        checkAuthState();
+    </script>
+main
 </body>
 </html>
